@@ -1,0 +1,38 @@
+# API Version: Deployment is part of the "apps/v1" API group (stable version)
+apiVersion: apps/v1
+# Type of Kubernetes resource (Deployment, Pod, Service, etc.)
+kind: Deployment
+
+# Metadata: Name and labels for the Deployment
+metadata:
+  name: nginx-deployment  # Name of the Deployment
+  labels:
+    app: nginx            # Label to identify the Deployment
+
+# Specification of the Deployment's desired state
+spec:
+  replicas: 3            # Number of identical Pods to maintain
+  selector:              # How the Deployment finds Pods to manage
+    matchLabels:         # Pods must match these labels
+      app: nginx
+
+  # Template for creating new Pods
+  template:
+    metadata:
+      labels:            # Labels applied to each Pod (MUST match selector above)
+        app: nginx
+    
+    # Pod specification
+    spec:
+      containers:
+      - name: nginx      # Container name
+        image: nginx:1.25.3  # Official nginx image
+        ports:
+        - containerPort: 80  # Port the container listens on
+        resources:
+          requests:       # Minimum resources required
+            cpu: "100m"  # 0.1 CPU core
+            memory: "64Mi"
+          limits:         # Maximum resources allowed
+            cpu: "200m"   # 0.2 CPU core
+            memory: "128Mi"
