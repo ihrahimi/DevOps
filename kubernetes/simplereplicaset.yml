@@ -1,0 +1,39 @@
+# API Version: ReplicaSet is part of the "apps/v1" API group (stable since Kubernetes 1.9)
+apiVersion: apps/v1
+
+# Type of Kubernetes resource (ReplicaSet, Deployment, Pod, etc.)
+kind: ReplicaSet
+
+# Metadata: Name, labels, and annotations for the ReplicaSet
+metadata:
+  name: nginx-replicaset  # Unique name for this ReplicaSet
+  labels:
+    app: nginx            # Label to identify the ReplicaSet
+    tier: frontend        # Additional label (optional)
+
+# Specification of the ReplicaSet's desired state
+spec:
+  replicas: 3            # Number of identical Pods to maintain
+  selector:              # Defines how the ReplicaSet finds Pods to manage
+    matchLabels:         # Pods must match these labels to be controlled
+      app: nginx         # (Must match the labels in the Pod template below)
+
+  # Template for creating new Pods (identical to a Pod definition)
+  template:
+    metadata:
+      labels:            # Labels applied to each Pod (must match selector!)
+        app: nginx       # Same as `spec.selector.matchLabels`
+        tier: frontend   # Additional label (optional)
+
+    # Pod specification (containers, volumes, etc.)
+    spec:
+      containers:
+      - name: nginx      # Name of the container inside the Pod
+        image: nginx:1.25.3  # Docker image to use
+        ports:
+        - containerPort: 80   # Port exposed by the container
+        resources:            # CPU/memory limits (optional)
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+      restartPolicy: Always  # Restart policy for the container(s)
