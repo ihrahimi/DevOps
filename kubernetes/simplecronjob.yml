@@ -9,10 +9,6 @@ spec:
   concurrencyPolicy: Forbid  # No overlapping executions
   jobTemplate:
     spec:
-      completions: 3       # Job needs to run 3 times successfully
-      parallelism: 2       # Run 2 pods in parallel
-      backoffLimit: 3      # Maximum retry attempts
-      activeDeadlineSeconds: 45  # Job must complete within 45 seconds
       template:
         spec:
           containers:
