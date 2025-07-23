@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: email-notifier
+spec:
+  schedule: "0 11 * * 0,1,2,4,6"  # 11 AM on weekdays
+  concurrencyPolicy: Forbid  # No overlapping executions
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: echo-email
+            image: alpine
+            command: ["echo", "Email has been sent"]
+          restartPolicy: OnFailure
