@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: echo-job
+spec:
+  completions: 3       # Job needs to run 3 times successfully
+  parallelism: 2      # Run 2 pods in parallel
+  backoffLimit: 3     # Maximum retry attempts before considering Job failed
+  activeDeadlineSeconds: 45  # Job must complete within 45 seconds
+  template:
+    spec:
+      containers:
+      - name: echo-container
+        image: alpine:latest
+        command: ["sh", "-c", "echo 'Hello from Kubernetes Job!' && sleep 5"]
+      restartPolicy: Never  
