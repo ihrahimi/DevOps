@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/node-selector: disk=hdd
+  creationTimestamp: "2025-07-23T08:10:42Z"
+  labels:
+    kubernetes.io/metadata.name: dev
+  name: dev
+  resourceVersion: "25349"
+  uid: 14d5f798-b9aa-41e4-8dfd-5b7335b94ec2
+spec:
+  finalizers:
+  - kubernetes
+status:
+  phase: Active
