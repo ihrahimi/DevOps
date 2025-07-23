@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ssd-monitor-DaemonSet
+spec:
+  selector:
+    matchLabels:
+      app: ssd-check
+  template:
+    metadata:
+      labels:
+        app: ssd-check
+    spec:
+      # Only run on nodes labeled with SSD
+      nodeSelector:
+        disk-type: ssd
+
+      containers:
+      - name: disk-checker
+        image: alpine  # Smallest possible image
+        command: ["sh", "-c", "echo 'This node has SSD!' && sleep 3600"]
