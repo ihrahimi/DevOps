@@ -36,3 +36,6 @@ spec:
           limits:         # Maximum resources allowed
             cpu: "200m"   # 0.2 CPU core
             memory: "128Mi"
+      nodeSelector:
+        disk: ssd
+
