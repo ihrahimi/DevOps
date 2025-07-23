@@ -3,10 +3,16 @@ kind: CronJob
 metadata:
   name: email-notifier
 spec:
-  schedule: "0 11 * * 0,1,2,4,6"  # 11 AM on weekdays
+  schedule: "0 11 * * 1,2,3,6,0"  # 11 AM on weekdays
+  failedJobsHistoryLimit: 2
+  successfulJobsHistoryLimit: 5
   concurrencyPolicy: Forbid  # No overlapping executions
   jobTemplate:
     spec:
+      completions: 3       # Job needs to run 3 times successfully
+      parallelism: 2       # Run 2 pods in parallel
+      backoffLimit: 3      # Maximum retry attempts
+      activeDeadlineSeconds: 45  # Job must complete within 45 seconds
       template:
         spec:
           containers:
