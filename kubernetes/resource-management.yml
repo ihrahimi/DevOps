@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: demo-quota
+  namespace: demo-ns
+spec:
+  hard:
+    requests.cpu: "2"           # Max 2 CPU cores requested
+    limits.cpu: "4"             # Max 4 CPU cores limit
+    requests.memory: 4Gi        # Max 4GiB memory requested
+    limits.memory: 8Gi          # Max 8GiB memory limit
+    pods: "10"                  # Max 10 pods
+    persistentvolumeclaims: "5" # Max 5 PVCs
+
