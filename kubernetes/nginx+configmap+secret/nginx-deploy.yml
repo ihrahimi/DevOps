@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        # Environment variables from Secret
+        env:
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: nginx-secrets
+              key: DB_USERNAME
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: nginx-secrets
+              key: DB_PASSWORD
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: nginx-secrets
+              key: DB_HOST
+        # Combined environment variable
+        - name: DB_CONNECTION
+          value: "postgres://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):5432/mydb"
+        # ConfigMap mounted as volume
+        volumeMounts:
+        - name: nginx-config-volume
+          mountPath: /etc/nginx/conf.d
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: nginx-config-volume
+        configMap:
+          name: nginx-config
+          items:
+          - key: nginx.conf
+            path: default.conf
+      - name: html-volume
+        configMap:
+          name: nginx-config
+          items:
+          - key: index.html
+            path: index.html

@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  # Nginx configuration file
+  nginx.conf: |
+    server {
+      listen       80;
+      server_name  localhost;
+
+      location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
+      }
+
+      # Custom error page
+      error_page   500 502 503 504  /50x.html;
+      location = /50x.html {
+        root   /usr/share/nginx/html;
+      }
+    }
+  
+  # Custom index.html
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Welcome to Nginx!</title>
+    </head>
+    <body>
+      <h1>Welcome to Nginx!</h1>
+      <p>This page is served from a ConfigMap.</p>
+      <p>Database connection: ${DB_CONNECTION}</p>
+    </body>
+    </html>
