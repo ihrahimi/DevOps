@@ -1,0 +1,13 @@
+# persistent-volume-claim.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: website-pvc  
+spec:
+  accessModes:
+    - ReadWriteMany  
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 1Gi   
+  volumeName: website-pv  # Explicitly bind to our PV

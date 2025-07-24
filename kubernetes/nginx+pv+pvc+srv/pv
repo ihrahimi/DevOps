@@ -1,0 +1,15 @@
+# persistent-volume.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: website-pv  # Name of the PersistentVolume
+spec:
+  capacity:
+    storage: 1Gi  # Storage capacity
+  accessModes:
+    - ReadWriteMany  # Access mode 
+  storageClassName: manual
+  persistentVolumeReclaimPolicy: Retain  # Retain the volume after PVC deletion
+  hostPath:
+    path: /srv/website  # Path on worker node where files will be stored
+    type: DirectoryOrCreate  # Create directory if it doesn't exist
