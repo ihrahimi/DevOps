@@ -1,0 +1,12 @@
+apiVersion: settings.k8s.io/v1alpha1
+kind: PodPreset
+metadata:
+  name: user-env-preset
+spec:
+  selector:
+    matchLabels:
+      demo: "true"  # Applies to pods with label `demo: true`
+  env:
+  - name: USER
+    value: "iman"
+

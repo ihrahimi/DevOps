@@ -1,0 +1,50 @@
+---
+# Headless Service for StatefulSet (required for stable network identities)
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-statefulset
+  labels:
+    app: nginx
+spec:
+  clusterIP: None  # Makes this a headless Service
+  ports:
+  - port: 80
+    name: web
+  selector:
+    app: nginx  # Matches the StatefulSet's pod template
+---
+# StatefulSet with 5 pods, each with its own PVC
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx-statefulset
+spec:
+  serviceName: "nginx-statefulset"  # Must match the Service name
+  replicas: 5  # Creates 5 pods: nginx-statefulset-0 to nginx-statefulset-4
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:stable-alpine
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: data  # Mounts the PVC for each pod
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:  # Dynamically creates PVCs for each pod
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]  # Each pod gets its own PV
+      storageClassName: "standard"       # Modify based on your storage class
+      resources:
+        requests:
+          storage: 1Gi  # Size of each PVC
