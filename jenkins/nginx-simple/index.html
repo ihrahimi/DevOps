@@ -1,23 +1,60 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Welcome to jenkins lab</title>
-<style>
-html { color-scheme: light dark; }
-body { width: 35em; margin: 0 auto;
-font-family: Tahoma, Verdana, Arial, sans-serif; }
-</style>
-</head>
-<body>
-<h1>Welcome to jenkins!</h1>
-<p>If you see this page, the nginx web server is successfully installed and
-working. Further configuration is required.</p>
+pipeline {
+    agent any
 
-<p>For online documentation and support please refer to
-<a href="http://nginx.org/">nginx.org</a>.<br/>
-Commercial support is available at
-<a href="http://nginx.com/">nginx.com</a>.</p>
+    environment {
+        REMOTE_HOST = '192.168.2.142'
+        REMOTE_USER = 'iman' // SSH user
+        INDEX_URL = 'https://raw.githubusercontent.com/ihrahimi/DevOps/main/jenkins/nginx-simple/index.html'
+        IMAGE_NAME = 'simple-nginx'
+    }
 
-<p><em>Thank you for using nginx.</em></p>
-</body>
-</html>
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/ihrahimi/DevOps.git', branch: 'main'
+            }
+        }
+
+        stage('Download Updated index.html') {
+            steps {
+                sh 'curl -o index.html ${INDEX_URL}'
+            }
+        }
+
+        stage('Send to Remote Builder') {
+            steps {
+                // Send index.html to remote server
+                sh """
+                scp index.html ${REMOTE_USER}@${REMOTE_HOST}:/home/${REMOTE_USER}/index.html
+                """
+            }
+        }
+
+        stage('Build Docker Image on Remote') {
+            steps {
+                // SSH into remote and build Docker image
+                sh """
+                ssh ${REMOTE_USER}@${REMOTE_HOST} '
+                mkdir -p ~/nginx-build &&
+                mv ~/index.html ~/nginx-build/index.html &&
+                cat > ~/nginx-build/Dockerfile <<EOF
+                FROM nginx:latest
+                COPY index.html /usr/share/nginx/html/index.html
+                EOF
+                cd ~/nginx-build &&
+                docker build -t ${IMAGE_NAME} .
+                '
+                """
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Docker image built successfully on remote server!'
+        }
+        failure {
+            echo '❌ Pipeline failed.'
+        }
+    }
+}
