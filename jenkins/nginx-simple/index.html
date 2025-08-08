@@ -1,57 +1,44 @@
-pipeline {
-    agent any
-
-    environment {
-        REMOTE_HOST = '192.168.2.142'
-        REMOTE_USER = 'iman' 
-        INDEX_URL = 'https://raw.githubusercontent.com/ihrahimi/DevOps/main/jenkins/nginx-simple/index.html'
-        IMAGE_NAME = 'custom-nginx'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      text-align: center;
     }
-
-    stages {
-        stage('Checkout') {
-            steps {
-                git url: 'https://github.com/ihrahimi/DevOps.git', branch: 'main'
-            }
-        }
-
-        stage('Download Updated index.html') {
-            steps {
-                sh 'curl -o index.html ${INDEX_URL}'
-            }
-        }
-
-        stage('Send to Remote Builder') {
-            steps {
-                // Send index.html to remote server
-                sh """
-                scp index.html ${REMOTE_USER}@${REMOTE_HOST}:/home/${REMOTE_USER}/index.html
-                """
-            }
-        }
-
-        stage('Build Docker Image on Remote') {
-            steps {
-                // SSH into remote and build Docker image
-                sh """
-                ssh ${REMOTE_USER}@${REMOTE_HOST} '
-                mkdir -p ~/nginx-build &&
-                mv ~/index.html ~/nginx-build/index.html &&
-                echo "FROM nginx:latest \nCOPY index.html /usr/share/nginx/html/index.html " > ~/nginx-build/Dockerfile 
-                cd ~/nginx-build &&
-                docker build -t ${IMAGE_NAME} .
-                '
-                """
-            }
-        }
+    header {
+      background-color: #0073e6;
+      color: white;
+      padding: 2rem 0;
     }
-
-    post {
-        success {
-            echo '✅ Docker image built successfully on remote server!'
-        }
-        failure {
-            echo '❌ Pipeline failed.'
-        }
+    main {
+      padding: 2rem;
     }
-}
+    footer {
+      background-color: #eee;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome to My Static Page</h1>
+    <p>This is a simple HTML file served with NGINX</p>
+  </header>
+  <main>
+    <p>Feel free to customize this content to suit your needs.</p>
+    <p>Built with ❤️ by Iman</p>
+  </main>
+  <footer>
+    &copy; 2025 Iman. All rights reserved.
+  </footer>
+</body>
+</html>
