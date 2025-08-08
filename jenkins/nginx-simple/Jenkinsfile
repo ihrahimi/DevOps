@@ -9,12 +9,7 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git url: 'https://github.com/ihrahimi/DevOps.git', branch: 'main'
-            }
-        }
-
+      
         stage('Download Updated index.html') {
             steps {
                 sh 'curl -o index.html ${INDEX_URL}'
@@ -39,9 +34,10 @@ pipeline {
                 mv ~/index.html ~/nginx-build/index.html &&
                 echo "FROM nginx:latest \nCOPY index.html /usr/share/nginx/html/index.html " > ~/nginx-build/Dockerfile 
                 cd ~/nginx-build &&
-                docker build -t ${IMAGE_NAME} .
                 docker container stop ${IMAGE_NAME}
                 docker container prune -f
+                docker image prune -f
+                docker build -t ${IMAGE_NAME} .
                 docker container run -d -p 8000:80 --name ${IMAGE_NAME} ${IMAGE_NAME}
                 '
                 """
