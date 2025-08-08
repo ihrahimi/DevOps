@@ -3,9 +3,9 @@ pipeline {
 
     environment {
         REMOTE_HOST = '192.168.2.142'
-        REMOTE_USER = 'iman' // SSH user
+        REMOTE_USER = 'iman' // Replace with your actual SSH user
         INDEX_URL = 'https://raw.githubusercontent.com/ihrahimi/DevOps/main/jenkins/nginx-simple/index.html'
-        IMAGE_NAME = 'simple-nginx'
+        IMAGE_NAME = 'custom-nginx'
     }
 
     stages {
@@ -37,10 +37,7 @@ pipeline {
                 ssh ${REMOTE_USER}@${REMOTE_HOST} '
                 mkdir -p ~/nginx-build &&
                 mv ~/index.html ~/nginx-build/index.html &&
-                cat > ~/nginx-build/Dockerfile <<EOF
-                FROM nginx:latest
-                COPY index.html /usr/share/nginx/html/index.html
-                EOF
+                echo "FROM nginx:latest \nCOPY index.html /usr/share/nginx/html/index.html " > ~/nginx-build/Dockerfile 
                 cd ~/nginx-build &&
                 docker build -t ${IMAGE_NAME} .
                 '
