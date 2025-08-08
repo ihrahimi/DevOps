@@ -2,142 +2,59 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_USER = credentials('docker-hub-username')
-        DOCKER_HUB_PASS = credentials('docker-hub-password')
-        SSH_KEY = credentials('ssh-key')
-        GIT_REPO = 'https://github.com/yourusername/your-static-website.git'
-        DOCKER_IMAGE = 'yourdockerhubusername/static-website'
-        BUILD_SERVER = 'user@build-server-ip'
-        REMOTE_DIR = '/opt/static-website'
+        REMOTE_HOST = '192.168.2.142'
+        REMOTE_USER = 'iman'
+        INDEX_URL = 'https://raw.githubusercontent.com/ihrahimi/DevOps/main/jenkins/nginx-simple/index.html'
+        IMAGE_NAME = 'custom-nginx'
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                git branch: 'main', url: env.GIT_REPO
+                git url: 'https://github.com/ihrahimi/DevOps.git', branch: 'main'
             }
         }
 
-        stage('Transfer Files with SCP') {
+        stage('Download Updated index.html') {
             steps {
+                sh 'curl -o index.html ${INDEX_URL}'
+            }
+        }
+
+        stage('Send to Remote Builder') {
+            steps {
+                // Send index.html to remote server
                 sh """
-                    # Create remote directory
-                    ssh -i $SSH_KEY ${env.BUILD_SERVER} "mkdir -p ${env.REMOTE_DIR}"
-                    
-                    # Copy files using SCP
-                    scp -i $SSH_KEY -r . ${env.BUILD_SERVER}:${env.REMOTE_DIR}/
+                scp index.html ${REMOTE_USER}@${REMOTE_HOST}:/home/${REMOTE_USER}/index.html
                 """
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Docker Image on Remote') {
             steps {
+                // SSH into remote and build Docker image
                 sh """
-                    # Build the image
-                    ssh -i $SSH_KEY ${env.BUILD_SERVER} \
-                    "cd ${env.REMOTE_DIR} && docker build -t ${env.DOCKER_IMAGE}:${env.BUILD_NUMBER} ."
-                    
-                    # Run test container
-                    ssh -i $SSH_KEY ${env.BUILD_SERVER} \
-                    "docker run -d -p 8080:80 --name static-website-test ${env.DOCKER_IMAGE}:${env.BUILD_NUMBER}"
-                    
-                    # Verify container is running
-                    ssh -i $SSH_KEY ${env.BUILD_SERVER} \
-                    "docker ps --filter 'name=static-website-test' | grep Up"
+                ssh ${REMOTE_USER}@${REMOTE_HOST} '
+                mkdir -p ~/nginx-build &&
+                mv ~/index.html ~/nginx-build/index.html &&
+                echo "FROM nginx:latest \nCOPY index.html /usr/share/nginx/html/index.html " > ~/nginx-build/Dockerfile 
+                cd ~/nginx-build &&
+                docker build -t ${IMAGE_NAME} .
+                docker container stop ${IMAGE_NAME}
+                docker container prune -f
+                docker container run -d -p 8000:80 --name ${IMAGE_NAME} ${IMAGE_NAME}
+                '
                 """
-            }
-        }
-
-        stage('Manual Approval') {
-            steps {
-                timeout(time: 1, unit: 'DAYS') {
-                    input message: 'Approve to push image and deploy?', ok: 'Approve'
-                }
-            }
-        }
-
-        stage('Push to Docker Hub') {
-            steps {
-                sh """
-                    # Login to Docker Hub
-                    ssh -i $SSH_KEY ${env.BUILD_SERVER} \
-                    "docker login -u ${env.DOCKER_HUB_USER} -p ${env.DOCKER_HUB_PASS}"
-                    
-                    # Push versioned image
-                    ssh -i $SSH_KEY ${env.BUILD_SERVER} \
-                    "docker push ${env.DOCKER_IMAGE}:${env.BUILD_NUMBER}"
-                    
-                    # Tag and push as latest
-                    ssh -i $SSH_KEY ${env.BUILD_SERVER} \
-                    "docker tag ${env.DOCKER_IMAGE}:${env.BUILD_NUMBER} ${env.DOCKER_IMAGE}:latest && \
-                     docker push ${env.DOCKER_IMAGE}:latest"
-                """
-            }
-        }
-
-        stage('Deploy to Kubernetes') {
-            steps {
-                withKubeConfig([credentialsId: 'k8s-credentials']) {
-                    sh """
-                        # Create deployment in default namespace
-                        kubectl apply -f - <<EOF
-                        apiVersion: apps/v1
-                        kind: Deployment
-                        metadata:
-                          name: static-website
-                        spec:
-                          replicas: 2
-                          selector:
-                            matchLabels:
-                              app: static-website
-                          template:
-                            metadata:
-                              labels:
-                                app: static-website
-                            spec:
-                              containers:
-                              - name: nginx
-                                image: ${env.DOCKER_IMAGE}:${env.BUILD_NUMBER}
-                                ports:
-                                - containerPort: 80
-                        EOF
-
-                        # Create NodePort service
-                        kubectl apply -f - <<EOF
-                        apiVersion: v1
-                        kind: Service
-                        metadata:
-                          name: static-website-service
-                        spec:
-                          type: NodePort
-                          selector:
-                            app: static-website
-                          ports:
-                            - protocol: TCP
-                              port: 80
-                              targetPort: 80
-                              nodePort: 30080
-                        EOF
-                    """
-                }
             }
         }
     }
 
     post {
-        always {
-            sh """
-                # Clean up test container
-                ssh -i $SSH_KEY ${env.BUILD_SERVER} \
-                "docker stop static-website-test || true && docker rm static-website-test || true"
-            """
-            cleanWs()
-        }
         success {
-            echo 'Pipeline completed successfully!'
+            echo '✅ Docker image built successfully on remote server!'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo '❌ Pipeline failed.'
         }
     }
 }
