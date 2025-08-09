@@ -62,4 +62,6 @@ https://img.shields.io/badge/GitHub-ihrahimi-181717?style=flat&logo=github
 
 ![Status] (https://img.shields.io/badge/LinkedIn-Iman_Hrahimi-0077B5?style=flat&logo=linkedin)
 
+![Status](https://img.shields.io/badge/Status-Evolving-blueviolet)
+
 "The only constant in DevOps is change. This repository evolves as I learn."
