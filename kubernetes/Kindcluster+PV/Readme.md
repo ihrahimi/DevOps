@@ -34,11 +34,11 @@ This repository contains configurations for setting up a local Kubernetes cluste
 kind create cluster --config kind-config.yaml
 
 2. Set up Persistent Volume
-  Create host directory
+# Create host directory
 sudo mkdir -p /srv/website
 sudo chmod 777 /srv/website
 
-  Apply PV and PVC
+# Apply PV and PVC
 kubectl apply -f persistent-volume.yaml
 kubectl apply -f persistent-volume-claim.yaml
 
@@ -47,7 +47,8 @@ kubectl apply -f nginx-deployment.yaml
 kubectl apply -f nginx-service.yaml
 
 4. Access Nginx
-# Get worker node IP (usually 127.0.0.1)
+   
+# Get worker node IP
 kubectl get nodes -o wide
 
 # Access via any worker port
