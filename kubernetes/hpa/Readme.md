@@ -44,8 +44,8 @@ kubectl get deployment,svc,hpa,pods
 3. Access Nginx:
 http://<node-ip>:30000
 
-🔧 Customization Options
+🔧 Customization Options 
 Adjust replicas count in deployment.yaml
-Modify resource limits as needed
-Change autoscaling thresholds in hpa.yaml
+Modify resource limits as needed 
+Change autoscaling thresholds in hpa.yaml 
 Update nodePort (must be between 30000-32767)
