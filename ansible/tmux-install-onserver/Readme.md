@@ -36,7 +36,8 @@ ssh-copy-id user@target-server
 On each target server, run:
 bash
 # Create sudoers file for your user
-echo "your_username ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/ansible-user
+add this line in sudoers file in last line
+your_username ALL=(ALL) NOPASSWD:ALL
 
 # Set secure permissions
 sudo chmod 0440 /etc/sudoers.d/ansible-user
