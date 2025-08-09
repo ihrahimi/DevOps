@@ -18,24 +18,27 @@ This repository contains configurations for setting up a local Kubernetes cluste
 ## 📋 File Structure
 .
 ├── kind-config.yaml # Kind cluster configuration
+
 ├── persistent-volume.yaml # PV configuration
+
 ├── persistent-volume-claim.yaml # PVC configuration
+
 ├── nginx-deployment.yaml # Nginx deployment
+
 └── nginx-service.yaml # Service configuration
 
 
 ## 🚀 Quick Start
 
-### 1. Create Kind Cluster
-```bash
+1. Create Kind Cluster
 kind create cluster --config kind-config.yaml
 
 2. Set up Persistent Volume
-# Create host directory
+  Create host directory
 sudo mkdir -p /srv/website
 sudo chmod 777 /srv/website
 
-# Apply PV and PVC
+  Apply PV and PVC
 kubectl apply -f persistent-volume.yaml
 kubectl apply -f persistent-volume-claim.yaml
 
