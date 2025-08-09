@@ -58,7 +58,7 @@ This repository follows calendar versioning (CalVer) in YYYY.MM.DD format to ref
 🔗 Connect
 Let's collaborate and grow together in the DevOps space!
 
-[![GitHub](https://img.shields.io/badge/GitHub-IHRahimi-181717?style=flat&logo=github)](https://github.com/ihrahimi)
+[![GitHub](https://img.shields.io/badge/GitHub-IHRahimi-blueviolet?style=flat&logo=github)](https://github.com/ihrahimi)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-IHRahimi-0077B5?style=flat&logo=linkedin)](https://www.linkedin.com/in/ihrahimi/)
 
 "The only constant in DevOps is change. This repository evolves as I learn."
