@@ -22,13 +22,9 @@ kubectl apply -f nginx-service.yaml
 📝 Configuration Details
 1. Nginx Deployment
 Image: nginx:latest
-
 Replicas: 2 initially
-
 Resource Limits:
-
 CPU: 100m request, 200m limit
-
 Memory: 128Mi request, 256Mi limit
 
 apiVersion: apps/v1
@@ -52,11 +48,8 @@ spec:
 
 2. Autoscaling (HPA)
 Scale Range: 1-10 pods
-
 Scaling Triggers:
-
 CPU > 50% utilization
-
 Memory > 70% utilization
 
 apiVersion: autoscaling/v2
@@ -73,9 +66,7 @@ spec:
 
 3. NodePort Service
 Type: NodePort
-
 Port: 80 (container) → 30000 (node)
-
 Access: http://<node-ip>:30000
 
 apiVersion: v1
