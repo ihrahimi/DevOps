@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main" ]
     paths:
-      - 'jenkins/nginx-simple/index.html'
+      - 'jenkins/simple-nginx/index.html'
 
 jobs:
   deploy:
@@ -23,7 +23,7 @@ jobs:
     - name: Deploy index.html
       run: |
         scp -o StrictHostKeyChecking=no \
-            jenkins/nginx-simple/index.html \
+            jenkins/simple-nginx/index.html \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/html/index.html
         ssh -o StrictHostKeyChecking=no \
             ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
