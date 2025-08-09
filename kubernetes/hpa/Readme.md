@@ -38,10 +38,10 @@ This repository contains Kubernetes manifests for deploying Nginx with horizonta
 1. Apply all configurations:
 kubectl apply -f .
 
-2.Verify deployment:
+2. Verify deployment:
 kubectl get deployment,svc,hpa,pods
 
-3.Access Nginx:
+3. Access Nginx:
 http://<node-ip>:30000
 
 🔧 Customization Options
