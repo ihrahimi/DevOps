@@ -39,9 +39,6 @@ bash
 add this line in sudoers file in last line
 your_username ALL=(ALL) NOPASSWD:ALL
 
-# Set secure permissions
-sudo chmod 0440 /etc/sudoers.d/ansible-user
-
 ### 3. Inventory File Setup
 Create an inventory.ini file:
 ```bash
