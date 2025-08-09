@@ -12,9 +12,6 @@ This repository contains Kubernetes manifests for deploying Nginx with horizonta
 3. **Service** (`nginx-service.yaml`) - Exposes the deployment
 
 ## 🚀 Quick Start
-# Kubernetes Nginx Deployment
-## Configuration Files
-
 ### 1. nginx-deployment.yaml
 - Deploys 2 replicas of Nginx
 - Sets resource requests and limits:
@@ -37,10 +34,8 @@ This repository contains Kubernetes manifests for deploying Nginx with horizonta
 
 1. Apply all configurations:
 kubectl apply -f .
-
 2. Verify deployment:
 kubectl get deployment,svc,hpa,pods
-
 3. Access Nginx:
 http://<node-ip>:30000
 
