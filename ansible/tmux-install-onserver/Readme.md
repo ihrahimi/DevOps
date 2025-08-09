@@ -42,7 +42,6 @@ your_username ALL=(ALL) NOPASSWD:ALL
 ### 3. Inventory File Setup
 Create an inventory.ini file:
 ```bash
-ini
 [all]
 server1 ansible_host=192.168.2.142
 
