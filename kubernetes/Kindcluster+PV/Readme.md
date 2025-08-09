@@ -16,7 +16,7 @@ This repository contains configurations for setting up a local Kubernetes cluste
 - NodePort service exposed on port 30000
 
 ## 📋 File Structure
-.
+
 ├── kind-config.yaml # Kind cluster configuration
 
 ├── persistent-volume.yaml # PV configuration
@@ -34,11 +34,11 @@ This repository contains configurations for setting up a local Kubernetes cluste
 kind create cluster --config kind-config.yaml
 
 2. Set up Persistent Volume
-# Create host directory
+### Create host directory
 sudo mkdir -p /srv/website
 sudo chmod 777 /srv/website
 
-# Apply PV and PVC
+### Apply PV and PVC
 kubectl apply -f persistent-volume.yaml
 kubectl apply -f persistent-volume-claim.yaml
 
@@ -48,53 +48,44 @@ kubectl apply -f nginx-service.yaml
 
 4. Access Nginx
    
-# Get worker node IP
+### Get worker node IP
 kubectl get nodes -o wide
 
-# Access via any worker port
+### Access via any worker port
 curl http://localhost:8080
+
 curl http://localhost:9080
+
 curl http://localhost:7080
-🔧 Configuration Details
+
+🔧 ## Configuration Details
+
 Kind Cluster (kind-config.yaml)
 1 control-plane node
-
 3 worker nodes with:
-
 Port mappings (host:container)
-
 /srv directory mounted from host
-
 Bidirectional file propagation
-
 Persistent Volume (persistent-volume.yaml)
 1Gi storage at /srv/website
-
 ReadWriteMany access mode
-
 Retain reclaim policy
-
 Nginx Deployment (nginx-deployment.yaml)
 3 replicas
-
 Mounts PVC at /usr/share/nginx/html
-
 Uses latest Nginx image
-
 Service (nginx-service.yaml)
 NodePort type
-
 Exposed on port 30000
-
 Maps to container port 80
 
 
-🧹 Cleanup
+## 🧹 Cleanup
 
 kind delete cluster
 sudo rm -rf /srv/website
 
-💡 Customization Tips
+## 💡 Customization Tips
 Change host ports in kind-config.yaml
 
 Adjust storage size in PV/PVC files
