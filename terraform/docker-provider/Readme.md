@@ -24,10 +24,11 @@ ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519
 
 # Copy public key to Docker host (replace 'iman' with your username)
 ssh-copy-id -i ~/.ssh/id_ed25519.pub iman@192.168.2.142
+```
 
-
-2. Configure Terraform Variables
+### 2. Configure Terraform Variables
 Edit the variables in variables.tf or override them during execution:
+```bash
 
 variable "docker_host_ssh" {
   description = "SSH connection string for the Docker host (user@ip:port)"
@@ -43,22 +44,22 @@ variable "ssh_private_key_path" {
 
 # Verify SSH connection works
 ssh -i ~/.ssh/id_ed25519 iman@192.168.2.142 docker ps
+```
 
-Usage
+### 3.Usage
+```bash
+
 Initialize Terraform:
-
-bash
 terraform init
+
 Review execution plan:
-
-bash
 terraform plan
-Apply configuration:
 
-bash
+Apply configuration:
 terraform apply
+
 Access Nginx:
 After successful deployment, Nginx will be available at:
 
-text
 http://192.168.2.142:8080
+```
