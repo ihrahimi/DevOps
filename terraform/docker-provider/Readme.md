@@ -24,6 +24,9 @@ ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519
 
 # Copy public key to Docker host (replace 'iman' with your username)
 ssh-copy-id -i ~/.ssh/id_ed25519.pub iman@192.168.2.142
+
+# Verify SSH connection works
+ssh -i ~/.ssh/id_ed25519 iman@192.168.2.142 docker ps
 ```
 
 ### 2. Configure Terraform Variables
@@ -41,9 +44,6 @@ variable "ssh_private_key_path" {
   type        = string
   default     = "~/.ssh/id_ed25519"
 }
-
-# Verify SSH connection works
-ssh -i ~/.ssh/id_ed25519 iman@192.168.2.142 docker ps
 ```
 
 ### 3.Usage
