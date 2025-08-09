@@ -30,6 +30,7 @@ This is my personal DevOps toolkit that I continuously update with:
 2. Clone or fork what you need:
    ```bash
    git clone https://github.com/ihrahimi/DevOps.git
+   
 3.Check back regularly for updates
 
 🌱 What's Coming Next
