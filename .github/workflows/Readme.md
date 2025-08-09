@@ -17,7 +17,7 @@ The workflow performs the following actions:
 ## Trigger Conditions
 - Triggered on `push` events to the `main` branch
 - Only runs when changes are made to:  
-  `jenkins/nginx-simple/index.html`
+  `jenkins/simple-nginx/index.html`
 
 ## Workflow Steps
 
@@ -47,7 +47,9 @@ This workflow requires the following secrets to be configured in your GitHub rep
 
 ## File Structure
 └── jenkins/
-└── nginx-simple/
+
+└── simple-nginx/
+
 └── index.html # The HTML file deployed to the server
 
 ## Deployment Path
