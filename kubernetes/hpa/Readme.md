@@ -12,102 +12,40 @@ This repository contains Kubernetes manifests for deploying Nginx with horizonta
 3. **Service** (`nginx-service.yaml`) - Exposes the deployment
 
 ## 🚀 Quick Start
+# Kubernetes Nginx Deployment
+## Configuration Files
 
-```bash
-# Apply all configurations
-kubectl apply -f nginx-deployment.yaml
-kubectl apply -f nginx-hpa.yaml
-kubectl apply -f nginx-service.yaml
+### 1. nginx-deployment.yaml
+- Deploys 2 replicas of Nginx
+- Sets resource requests and limits:
+  - CPU: 100m request / 200m limit
+  - Memory: 128Mi request / 256Mi limit
+- Exposes container port 80
 
-📝 Configuration Details
-1. Nginx Deployment
-Image: nginx:latest
-Replicas: 2 initially
-Resource Limits:
-CPU: 100m request, 200m limit
-Memory: 128Mi request, 256Mi limit
+### 2. nginx-hpa.yaml
+- Configures Horizontal Pod Autoscaler (HPA)
+- Scales between 1-10 pods based on:
+  - CPU utilization > 50%
+  - Memory utilization > 70%
 
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx
-spec:
-  replicas: 2
-  template:
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:latest
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "128Mi"
-          limits:
-            cpu: "200m"
-            memory: "256Mi"
+### 3. nginx-service.yaml
+- Creates a NodePort service
+- Exposes Nginx on port 30000
+- Maps to container port 80
 
-2. Autoscaling (HPA)
-Scale Range: 1-10 pods
-Scaling Triggers:
-CPU > 50% utilization
-Memory > 70% utilization
+## Deployment Instructions
 
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-spec:
-  minReplicas: 1
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        averageUtilization: 50
+1. Apply all configurations:
+kubectl apply -f .
 
-3. NodePort Service
-Type: NodePort
-Port: 80 (container) → 30000 (node)
-Access: http://<node-ip>:30000
+2.Verify deployment:
+kubectl get deployment,svc,hpa,pods
 
-apiVersion: v1
-kind: Service
-spec:
-  type: NodePort
-  ports:
-  - port: 80
-    nodePort: 30000
+3.Access Nginx:
+http://<node-ip>:30000
 
-🛠️ Management Commands
-# Check deployment status
-kubectl get deployments
-
-# View autoscaling status
-kubectl get hpa
-
-# Access service
-kubectl get services
-
-# Monitor pods
-kubectl get pods -w
-
-# Delete resources
-kubectl delete -f .
-
-📊 Architecture
-<img width="791" height="2236" alt="deepseek_mermaid_20250809_9aa077" src="https://github.com/user-attachments/assets/689e12aa-1878-4d16-87cf-6088f3d28f01" />
-
-🔧 Customization
-Change nodePort (must be 30000-32767)
-
-Adjust resource requests/limits
-
-Modify autoscaling thresholds
-
-Update Nginx image version
-
-📚 References
-[Kubernetes Documentation
-](https://kubernetes.io/docs/home/)
-[Nginx Docker Image
-](https://hub.docker.com/_/nginx)
-[HPA Best Practices](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+🔧 Customization Options
+Adjust replicas count in deployment.yaml
+Modify resource limits as needed
+Change autoscaling thresholds in hpa.yaml
+Update nodePort (must be between 30000-32767)
